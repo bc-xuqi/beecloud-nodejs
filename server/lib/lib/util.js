@@ -1,12 +1,5 @@
 const config = require('./config');
-const url = require('url');
-const https = require('https');
-
-
-
-
-
-
+const request = require('superagent');
 
 /**
  * @desc 验证参数非空，类型
@@ -77,43 +70,29 @@ function postman(param) {
         if (checkResult.resultCode != 0) {
             resolve(checkResult);
         }
+
         const urlStr = 'https://' + config.servers[Math.ceil(Math.random() * 3)] + param.path;
-        const resHandler = (res)=>{
-            res.setEncoding("utf-8");
-            let resData = [],
-                errorMsg;
-            res.on("data", (chunk) => {
-                resData.push(chunk);
-            }).on("end", () => {
-                if (res.statusCode === 200) {
-                    resolve(resData.join(''));
-                }
-            });
+        const resHandler = (res) => {
+            const resData = JSON.parse(res.text);
+            resolve(resData)
         }
-        if (param.type.toLowerCase() === 'get') {
-            https.get(`${urlStr}?para=${encodeURIComponent(JSON.stringify(param.data))}`, (res) => {
-               resHandler(res);
-            })
+        if (param.type.toLocaleLowerCase() === 'get') {
+            request
+                .get(urlStr)
+                .query(param.data)
+                .end((err, res) => {
+                    resHandler(res);
+                });
+        } else if (param.type.toLocaleLowerCase() === 'post') {
+            request.post(urlStr)
+                .send(param.data)
+                .end((err, res) => {
+                    resHandler(res);
+                })
         } else {
-            const parse = url.parse(urlStr),
-            data = JSON.stringify(param.data),
-            options = {
-                "method": param.type,
-                "host": parse.hostname,
-                "path": parse.path,
-                "port": parse.port,
-                "headers": {
-                    "Content-Length": data.length,
-                    "Content-Type": "application/json",
-                    "Connection": "keep-alive"
-                }
-            };
-            let req = https.request(options, (res) => {
-                resHandler(res);
-            });
-            req.write(data);
-            req.end();
+            alert('请输入请求类型');
         }
+
     })
 }
 

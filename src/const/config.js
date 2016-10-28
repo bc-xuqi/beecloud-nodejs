@@ -16,5 +16,6 @@ export const interfaceUrls = {
     refund:BACK_END_HOST+'api/refund',//退款/预退款
     queryById:BACK_END_HOST+'api/queryById',//支付/退款订单查询(指定ID)
     auth:BACK_END_HOST+'api/auth',
-    checkoff:BACK_END_HOST+'api/checkoff'
+    sms:BACK_END_HOST+'api/sms',
+    sign:BACK_END_HOST+'api/sign'
 }

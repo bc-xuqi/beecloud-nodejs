@@ -288,8 +288,15 @@ class BCRESTApi {
     }
 
 
-    //代扣
-    checkoff(param) {
+    /**
+     * @desc: 发送短信
+     *
+     * @param $data
+     *   phone 手机号
+     *
+     * @return json
+     */
+    sms(param) {
         return new Promise((resolve, reject) => {
             const neededData = {
                 common: {
@@ -309,6 +316,49 @@ class BCRESTApi {
             })
         })
     }
+
+    /**
+     * @desc: 签约API
+     *
+     * @param $data
+     *   mobile 手机号
+     *   bank  银行名称
+     *   id_no 身份证号
+     *   name   姓名
+     *   card_no 银行卡号(借记卡,不支持信用卡)
+     *   sms_id  获取验证码接口返回验证码记录的唯一标识
+     *   sms_code 手机端接收到验证码
+     *
+     * @return json
+     */
+    sign(param) {
+        return new Promise((resolve, reject) => {
+            const neededData = {
+                common: {
+                    app_id: 'string',
+                    timestamp: 'number',
+                    app_sign: 'string',
+                    mobile: 'string',
+                    bank:'string',
+                    id_no:'string',
+                    name:'string',
+                    card_no:'string',
+                    sms_id:'string',
+                    sms_code:'string'
+                }
+            }
+            util.postman({
+                path: config.URI_CARD_CHARGE_SIGN,
+                type: 'post',
+                data: param,
+                neededData: neededData
+            }).then(value => {
+                resolve(value);
+            })
+        })
+    }
+
+
 }
 
 module.exports = BCRESTApi;
