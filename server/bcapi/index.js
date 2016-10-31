@@ -1,5 +1,6 @@
 const config = require('./lib/config');
 const util = require('./lib/util');
+const _md5 = require('./lib/md5');
 
 class BCRESTApi {
     //支付
@@ -358,6 +359,10 @@ class BCRESTApi {
         })
     }
 
+    //md5
+    md5(data){
+        return _md5(data);
+    }
 
 }
 

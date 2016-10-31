@@ -3,8 +3,8 @@ const path = require('path');
 const favicon = require('serve-favicon');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const BCRESTApi = require('./lib/BCRESTApi');
-const md5 = require('./lib/lib/md5');
+const BCRESTAPI = require('./bcapi');
+
 
 
 
@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use('/', express.static(__dirname + '/public'));
 
-const API = new BCRESTApi();
+const API = new BCRESTAPI();
 
 
 const port = 3002;
@@ -51,7 +51,7 @@ app.post('/api/bill', (req, res, next) => { //支付
 
 app.post('/api/bills', (req, res, next) => { //订单查询
   let data = req.body;
-  data.app_sign = md5(data.app_id + data.timestamp + data.app_secret);
+  data.app_sign = API.md5(data.app_id + data.timestamp + data.app_secret);
   API.getBills(data).then((response) => {
     res.send(response);
   })
@@ -59,7 +59,7 @@ app.post('/api/bills', (req, res, next) => { //订单查询
 
 app.post('/api/billsCount', (req, res, next) => { //订单总数
   let data = req.body;
-  data.app_sign = md5(data.app_id + data.timestamp + data.app_secret);
+  data.app_sign = API.md5(data.app_id + data.timestamp + data.app_secret);
   API.getBillsCount(data).then((response) => {
     res.send(response);
   })
@@ -67,7 +67,7 @@ app.post('/api/billsCount', (req, res, next) => { //订单总数
 
 app.post('/api/refunds', (req, res, next) => { //退款查询
    let data = req.body;
-  data.app_sign = md5(data.app_id + data.timestamp + data.app_secret);
+  data.app_sign = API.md5(data.app_id + data.timestamp + data.app_secret);
   API.getRefunds(data).then((response) => {
     res.send(response);
   })
@@ -75,7 +75,7 @@ app.post('/api/refunds', (req, res, next) => { //退款查询
 
 app.post('/api/refundsCount', (req, res, next) => { //退款总数
   let data = req.body;
-  data.app_sign = md5(data.app_id + data.timestamp + data.app_secret);
+  data.app_sign = API.md5(data.app_id + data.timestamp + data.app_secret);
   API.getRefundsCount(data).then((response) => {
     res.send(response);
   })
@@ -89,7 +89,7 @@ app.post('/api/refund', (req, res, next) => { //退款||预退款
 
 app.post('/api/queryById', (req, res, next) => { //支付/退款订单查询(指定ID)
   let data = req.body;
-  data.app_sign = md5(data.app_id + data.timestamp + data.app_secret);
+  data.app_sign = API.md5(data.app_id + data.timestamp + data.app_secret);
   if (data.type === 'bill') {
     API.getBillById(data).then((response) => {
       res.send(response);
@@ -115,6 +115,6 @@ app.post('/api/checkoff',(req,res,next) => {//代扣
 
 
 function getData(data){
-  data.app_sign = md5(data.app_id + data.timestamp + data.app_secret);
+  data.app_sign = API.md5(data.app_id + data.timestamp + data.app_secret);
   return data;
 }
