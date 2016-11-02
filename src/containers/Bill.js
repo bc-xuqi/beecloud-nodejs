@@ -19,7 +19,7 @@ export default class Bill extends PureComponent {
         data.channel = this.props.params.channel;//根据不同场景选择不同的支付方式	
         data.timestamp = new Date().valueOf();//时间戳，毫秒数	
         data.app_id = config.APP_ID;//App在BeeCloud平台的唯一标识	
-        data.app_sign = md5(config.APP_ID + data.timestamp + config.APP_SECRET);
+        data.app_secret = config.APP_SECRET;
         data.total_fee = 1;//total_fee(int 类型) 单位分
         data.bill_no = `bcdemo${data.timestamp}`;//8到32位数字和/或字母组合，请自行确保在商户系统中唯一，同一订单号不可重复提交，否则会造成订单重复
         data.title = `node德玛西亚${data.channel}test`;//title UTF8编码格式，32个字节内，最长支持16个汉字
@@ -117,11 +117,11 @@ export default class Bill extends PureComponent {
                     case 'YEE_WEB':
                     case 'YEE_WAP':
                     case 'YEE_NOBANKCARD':
+                    case 'BC_EXPRESS':
                         window.location.href = res.url;
                         break;
                     case 'PAYPAL_PAYPAL':
                     case 'BC_GATEWAY':
-                    case 'BC_EXPRESS':
                         document.write(res.html);
                         break;
                     case 'BC_NATIVE':

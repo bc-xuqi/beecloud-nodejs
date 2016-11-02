@@ -110,7 +110,7 @@ export default class Bills extends PureComponent {
 
     componentDidMount(){
         if(this.props.params.type==='bills'){
-            this.getBillsCount();
+            // this.getBillsCount();
             this.getBills();
         }else{
             this.getRefunds();

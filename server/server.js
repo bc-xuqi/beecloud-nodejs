@@ -44,7 +44,9 @@ app.all('*', function (req, res, next) {
 
 
 app.post('/api/bill', (req, res, next) => { //支付
-  API.bill(req.body).then((response) => {
+  let data = req.body;
+  data.app_sign = API.md5(data.app_id + data.timestamp + data.app_secret);
+  API.bill(data).then((response) => {
     res.send(response);
   })
 })
@@ -52,6 +54,7 @@ app.post('/api/bill', (req, res, next) => { //支付
 app.post('/api/bills', (req, res, next) => { //订单查询
   let data = req.body;
   data.app_sign = API.md5(data.app_id + data.timestamp + data.app_secret);
+  delete data.app_secret;
   API.getBills(data).then((response) => {
     res.send(response);
   })
@@ -109,6 +112,22 @@ app.post('/api/auth',(req,res,next) => {//鉴权
 
 app.post('/api/checkoff',(req,res,next) => {//代扣
   API.checkoff(getData(req.body)).then((response) => {
+    res.send(response);
+  })
+})
+
+app.post('/api/bcTransfer', (req, res, next) => { //退款总数
+  let data = req.body;
+  data.app_sign = API.md5(data.app_id + data.timestamp + data.app_secret);
+  API.bcTransfer(data).then((response) => {
+    res.send(response);
+  })
+})
+
+app.post('/api/transfer', (req, res, next) => { //退款总数
+  let data = req.body;
+  data.app_sign = API.md5(data.app_id + data.timestamp + data.app_secret);
+  API.transfer(data).then((response) => {
     res.send(response);
   })
 })

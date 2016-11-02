@@ -14,6 +14,10 @@ let initialState = Immutable.fromJS({
             name: 'BC_TRANSFER',
             imgPath: 'http://beeclouddoc.qiniudn.com/icon-companypay.png'
         },
+        {
+            name: 'ALI_TRANSFER',
+            imgPath: 'http://beeclouddoc.qiniudn.com/ali.png'
+        }
     ],
     btnText:'确认打款',
     currentChannel: ''

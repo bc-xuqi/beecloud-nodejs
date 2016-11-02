@@ -1,16 +1,17 @@
-import React from 'react'
-import { render } from 'react-dom'
-import { Provider } from 'react-redux'
-import App from './containers/App'
-import MainPage from './containers/MainPage'
-import Bill from './containers/Bill'
-import Bills from './containers/Bills'
-import QueryById from './containers/QueryById'
-import configureStore from './store/configStore'
-import Subscription from './containers/Subscription'
-import Auth from './containers/Auth'
-import Checkoff from './containers/Checkoff'
-import './css/style.css'
+import React from 'react';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import App from './containers/App';
+import MainPage from './containers/MainPage';
+import Bill from './containers/Bill';
+import Bills from './containers/Bills';
+import QueryById from './containers/QueryById';
+import configureStore from './store/configStore';
+import Subscription from './containers/Subscription';
+import Auth from './containers/Auth';
+import Checkoff from './containers/Checkoff';
+import Transfer from './containers/Transfer';
+import './css/style.css';
 
 
 
@@ -30,6 +31,7 @@ render(
         <Route path="/Subscription/:type" component={Subscription}/>
         <Route path="/auth" component={Auth}/>
         <Route path="/Checkoff" component={Checkoff}/>
+        <Route path="/Transfer/:channel" component={Transfer}/>
       </Route>
     </Router>
   </Provider>,
