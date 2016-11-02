@@ -102,8 +102,7 @@ function postman(param) {
         }
         if (param.type.toLocaleLowerCase() === 'get') {
             request
-                .get(urlStr)
-                .query(param.data)
+                .get(`${urlStr}?para=${encodeURIComponent(JSON.stringify(param.data))}`)
                 .end((err, res) => {
                     resHandler(res);
                 });
