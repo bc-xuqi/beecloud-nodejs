@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "concurrently": "^3.1.0",
     "react-scripts": "0.6.1"
   },
   "dependencies": {
@@ -18,13 +19,18 @@
     "redux-logger": "^2.7.0",
     "redux-thunk": "^2.1.0",
     "superagent": "^2.3.0",
-    "whatwg-fetch": "^1.0.0"
+    "whatwg-fetch": "^1.0.0",
+    "beecloud-node-sdk": "^0.1.0",
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.14.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "server":"node ./server/server.js"
+    "server": "node ./server/server.js",
+    "dev": "concurrently --kill-others \"npm start\" \"node ./server/server.js\""
   }
 }

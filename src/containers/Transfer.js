@@ -14,7 +14,7 @@ export default class Transfer extends PureComponent {
         data.app_secret = config.APP_SECRET;
         if (channel === 'BC_TRANSFER') {
             data.total_fee = 1;
-            data.bill_no = `bc企业打款`;
+            data.bill_no = `bc企业打款xxxxxxxxxxx`;
             data.title = '白开水';
             data.trade_source = 'OUT_PC';//UTF8编码格式，目前只能填写OUT_PC	
             data.bank_fullname = '中国银行';//中国银行，而不能写成"中行",因为“中行”也是中信银行和中兴银行的缩写	
