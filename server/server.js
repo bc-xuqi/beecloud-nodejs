@@ -85,7 +85,7 @@ app.post('/api/refundsCount', (req, res, next) => { //退款总数
 })
 
 app.post('/api/refund', (req, res, next) => { //退款||预退款
-  API.getBills(req.body).then((response) => {
+  API.refund(req.body).then((response) => {
     res.send(response);
   })
 })
