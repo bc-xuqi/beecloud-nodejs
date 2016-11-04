@@ -10,8 +10,6 @@ export default class Transfer extends PureComponent {
     transfer() {
         let data = {}, _this = this, channel = this.props.params.channel;
         data.timestamp = new Date().valueOf();//时间戳，毫秒数	
-        data.app_id = config.APP_ID;//App在BeeCloud平台的唯一标识	
-        data.app_secret = config.APP_SECRET;
         if (channel === 'BC_TRANSFER') {
             data.total_fee = 1;
             data.bill_no = `bc企业打款xxxxxxxxxxx`;

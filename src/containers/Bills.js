@@ -24,8 +24,6 @@ export default class Bills extends PureComponent {
         let data = {}, _this = this;
         data.channel = this.props.params.channel;//根据不同场景选择不同的支付方式	
         data.timestamp = new Date().valueOf();//时间戳，毫秒数	
-        data.app_id = config.APP_ID;//App在BeeCloud平台的唯一标识	
-        data.app_secret = config.APP_SECRET;
         //data.limit = 20;//默认为10，最大为50. 设置为10表示只返回满足条件的10条数据
         //start_time - 毫秒时间戳, 13位
         //end_time - 毫秒时间戳, 13位
@@ -46,8 +44,6 @@ export default class Bills extends PureComponent {
         let data = {},_this = this;
         data.channel = this.props.params.channel;//根据不同场景选择不同的支付方式	
         data.timestamp = new Date().valueOf();//时间戳，毫秒数	
-        data.app_id = config.APP_ID;//App在BeeCloud平台的唯一标识	
-        data.app_secret = config.APP_SECRET;
         //data.limit = 20;//默认为10，最大为50. 设置为10表示只返回满足条件的10条数据
         //start_time - 毫秒时间戳, 13位
         //end_time - 毫秒时间戳, 13位
@@ -68,9 +64,6 @@ export default class Bills extends PureComponent {
         let data = {}, _this = this;
         data.channel = this.props.params.channel;//根据不同场景选择不同的支付方式	
         data.timestamp = new Date().valueOf();//时间戳，毫秒数	
-        data.app_id = config.APP_ID;//App在BeeCloud平台的唯一标识	
-        data.app_sign = md5(config.APP_ID + data.timestamp + config.APP_SECRET);
-        data.app_secret = config.APP_SECRET;
         //start_time - 毫秒时间戳, 13位
         //end_time - 毫秒时间戳, 13位
         data.need_approval = this.props.params.type==='refunds'?false:true;
@@ -90,9 +83,6 @@ export default class Bills extends PureComponent {
         let data = {}, _this = this;
         data.channel = this.props.params.channel;//根据不同场景选择不同的支付方式	
         data.timestamp = new Date().valueOf();//时间戳，毫秒数	
-        data.app_id = config.APP_ID;//App在BeeCloud平台的唯一标识	
-        data.app_sign = md5(config.APP_ID + data.timestamp + config.APP_SECRET);
-        data.app_secret = config.APP_SECRET;
         //start_time - 毫秒时间戳, 13位
         //end_time - 毫秒时间戳, 13位
         data.need_approval = this.props.params.type==='refunds'?false:true;
@@ -110,7 +100,7 @@ export default class Bills extends PureComponent {
 
     componentDidMount(){
         if(this.props.params.type==='bills'){
-            this.getBillsCount();
+            // this.getBillsCount();
             this.getBills();
         }else{
             this.getRefunds();
@@ -138,8 +128,6 @@ export default class Bills extends PureComponent {
             let data = refundData,_this = this;
             data.channel = this.props.params.channel;//根据不同场景选择不同的支付方式	
             data.timestamp = new Date().valueOf();//时间戳，毫秒数	
-            data.app_id = config.APP_ID;//App在BeeCloud平台的唯一标识	
-            data.app_sign = md5(config.APP_ID + data.timestamp + config.APP_SECRET);
             //格式为:退款日期(8位) + 流水号(3~24 位)。请自行确保在商户系统中唯一，
             //且退款日期必须是发起退款的当天日期,同一退款单号不可重复提交，否则会造成退款单重复。
             //流水号可以接受数字或英文字符，建议使用数字，但不可接受“000”	

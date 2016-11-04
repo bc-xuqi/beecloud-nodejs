@@ -10,8 +10,6 @@ export default class Auth extends PureComponent {
         //第一步: 获取验证码,得到参数sms_id, sms_code: 请查看手机收到的验证码
         let data = {},_this = this;
         data.timestamp = new Date().valueOf();//时间戳，毫秒数	
-        data.app_id = config.APP_ID;//App在BeeCloud平台的唯一标识	
-        data.app_secret = config.APP_SECRET;
         data.phone = '1862500xxxx';
         postman({
             type:'post',

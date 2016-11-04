@@ -1,6 +1,6 @@
 const config = require('./lib/config');
 const util = require('./lib/util');
-const _md5 = require('./lib/md5');
+
 
 class BCRESTApi {
     //支付
@@ -53,11 +53,13 @@ class BCRESTApi {
                     }
                 }
             }
+            const url = this.test ?config.URI_TEST_BILL: config.URI_BILL;
             util.postman({
-                path: config.URI_BILL,
+                path: url,
                 type: 'post',
                 data: param,
-                neededData: neededParam
+                neededData: neededParam,
+                target:this//BCRESTApi对象
             }).then((res) => {
                 resolve(res);
             })
@@ -80,7 +82,8 @@ class BCRESTApi {
                 path: config.URI_REFUND,
                 type: 'post',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
@@ -104,7 +107,8 @@ class BCRESTApi {
                 path: config.URI_REFUND,
                 type: 'put',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
@@ -121,11 +125,13 @@ class BCRESTApi {
                     app_sign: 'string',
                 }
             }
+            const url = !this.test ? config.URI_BILLS : config.URI_TEST_BILLS;
             util.postman({
-                path: config.URI_BILLS,
+                path: url,
                 type: 'GET',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
@@ -142,11 +148,13 @@ class BCRESTApi {
                     app_sign: 'string',
                 }
             }
+            const url = !this.test ? config.URI_BILLS_COUNT : config.URI_TEST_BILLS_COUNT;
             util.postman({
-                path: config.URI_BILLS_COUNT,
+                path: url,
                 type: 'get',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
@@ -168,7 +176,8 @@ class BCRESTApi {
                 path: config.URI_REFUNDS,
                 type: 'get',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
@@ -190,7 +199,8 @@ class BCRESTApi {
                 path: config.URI_REFUNDS_COUNT,
                 type: 'get',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
@@ -213,7 +223,8 @@ class BCRESTApi {
                 path: config.URI_REFUND_STATUS,
                 type: 'get',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
@@ -228,14 +239,15 @@ class BCRESTApi {
                     app_id: 'string',
                     timestamp: 'number',
                     app_sign: 'string',
-                    id: 'string'
+                    id: 'string',
                 }
             }
             util.postman({
                 path: config.URI_REFUND + '/' + param.id,
                 type: 'get',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
@@ -257,7 +269,8 @@ class BCRESTApi {
                 path: config.URI_BILL + '/' + param.id,
                 type: 'get',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
@@ -274,14 +287,15 @@ class BCRESTApi {
                     timestamp: 'number',
                     app_sign: 'string',
                     name: 'string',
-                    id_no:'string'
+                    id_no: 'string'
                 }
             }
             util.postman({
                 path: config.URI_AUTH,
                 type: 'post',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
@@ -311,7 +325,8 @@ class BCRESTApi {
                 path: config.URI_SUBSCRIPTION_SMS,
                 type: 'post',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
@@ -340,29 +355,26 @@ class BCRESTApi {
                     timestamp: 'number',
                     app_sign: 'string',
                     mobile: 'string',
-                    bank:'string',
-                    id_no:'string',
-                    name:'string',
-                    card_no:'string',
-                    sms_id:'string',
-                    sms_code:'string'
+                    bank: 'string',
+                    id_no: 'string',
+                    name: 'string',
+                    card_no: 'string',
+                    sms_id: 'string',
+                    sms_code: 'string'
                 }
             }
             util.postman({
                 path: config.URI_CARD_CHARGE_SIGN,
                 type: 'post',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
         })
     }
 
-    //md5
-    md5(data){
-        return _md5(data);
-    }
 
     /**
      * @desc: 打款到银行卡
@@ -381,29 +393,30 @@ class BCRESTApi {
      * optional 用户自定义的参数，将会在Webhook通知中原样返回，该字段主要用于商户携带订单的自定义数据
      * @return json
      */
-    bcTransfer(param){
-        return new Promise((resolve,reject)=>{
+    bcTransfer(param) {
+        return new Promise((resolve, reject) => {
             const neededData = {
                 common: {
                     app_id: 'string',
                     timestamp: 'number',
                     app_sign: 'string',
-                    total_fee:'number',
-                    bill_no:'string',
-                    title:'string',
-                    trade_source:'string',
-                    bank_fullname:'string',
-                    card_type:'string',
-                    account_type:'string',
-                    account_no:'string',
-                    account_name:'string',
+                    total_fee: 'number',
+                    bill_no: 'string',
+                    title: 'string',
+                    trade_source: 'string',
+                    bank_fullname: 'string',
+                    card_type: 'string',
+                    account_type: 'string',
+                    account_no: 'string',
+                    account_name: 'string',
                 }
             }
             util.postman({
                 path: config.URI_BC_TRANSFER,
                 type: 'post',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
@@ -419,18 +432,19 @@ class BCRESTApi {
      * 
      * @return json
      */
-    transferBanks(param){
-        return new Promise((resolve,reject)=>{
+    transferBanks(param) {
+        return new Promise((resolve, reject) => {
             const neededData = {
                 common: {
-                    type:'string'
+                    type: 'string'
                 }
             }
             util.postman({
                 path: config.URI_BC_TRANSFER_BANKS,
                 type: 'get',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
@@ -456,26 +470,26 @@ class BCRESTApi {
      * 
      * @return json
      */
-    transfer(param){
-        return new Promise((resolve,reject)=>{
+    transfer(param) {
+        return new Promise((resolve, reject) => {
             const neededData = {
                 common: {
                     app_id: 'string',
                     timestamp: 'number',
                     app_sign: 'string',
-                    channel:'string',
-                    transfer_no:'string',
-                    total_fee:'number',
-                    desc:'string',
-                    channel_user_id:'string',
+                    channel: 'string',
+                    transfer_no: 'string',
+                    total_fee: 'number',
+                    desc: 'string',
+                    channel_user_id: 'string',
                 },
-                channel:{
-                    ALI_TRANSFER:{
-                        channel_user_name:'string',
-                        account_name:'string'
+                channel: {
+                    ALI_TRANSFER: {
+                        channel_user_name: 'string',
+                        account_name: 'string'
                     },
-                    WX_REDPACK:{
-                        redpack_info:'object'
+                    WX_REDPACK: {
+                        redpack_info: 'object'
                     }
                 }
             }
@@ -483,7 +497,8 @@ class BCRESTApi {
                 path: config.URI_BC_TRANSFER,
                 type: 'post',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
@@ -507,28 +522,46 @@ class BCRESTApi {
      * 
      * @return json
      */
-    transfers(param){
-        return new Promise((resolve,reject)=>{
+    transfers(param) {
+        return new Promise((resolve, reject) => {
             const neededData = {
                 common: {
-                    app_id:'string',
-                    timestamp:'number',
-                    app_sign:'string',
-                    channel:'string',
-                    batch_no:'string',
-                    account_name:'string',
-                    transfer_data:'array'
+                    app_id: 'string',
+                    timestamp: 'number',
+                    app_sign: 'string',
+                    channel: 'string',
+                    batch_no: 'string',
+                    account_name: 'string',
+                    transfer_data: 'array'
                 }
             }
             util.postman({
                 path: config.URI_BC_TRANSFER_BANKS,
                 type: 'get',
                 data: param,
-                neededData: neededData
+                neededData: neededData,
+                target:this//BCRESTApi对象
             }).then(value => {
                 resolve(value);
             })
         })
+    }
+    /**
+     * @desc 注册APP
+     */
+    registerApp(appId, appSecret, masterSecret, testSecret) {
+        this.data = {
+            app_id: appId,
+            app_secret: appSecret,
+            master_secret: masterSecret,
+            test_secret: testSecret,
+        }
+
+    }
+
+    //是否开启测试模式  默认关闭
+    setSandbox(ifTest) {
+        this.test = ifTest;
     }
 }
 

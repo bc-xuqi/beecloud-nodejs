@@ -2,6 +2,7 @@ const config = require('./config');
 const url = require('url');
 const https = require('https');
 const request = require('superagent');
+const _md5 = require('./md5');
 
 /**
  * @desc 验证参数非空，类型
@@ -65,34 +66,17 @@ function checkData(param, data) {
 }
 
 
-function _urlencode(obj) {
-    if (!(obj instanceof Array) && !(obj instanceof Object)) {
-        throw new TypeError('obj 类型错误！');
-    }
-    if (obj instanceof Array) {
-        for (var i = 0, len = obj.length; i < len; i++) {
-            if (obj[i] instanceof Object) {
-                _urlencode(obj[i]);
-            } else {
-                obj[i] = typeof obj[i] === 'string' ? encodeURIComponent(obj[i]) : obj[i];
-            }
-        }
-    } else {
-        for (var i in obj) {
-            if (obj[i] instanceof Array || obj[i] instanceof Object) {
-                _urlencode(obj[i]);
-            } else {
-                obj[i] = typeof obj[i] === 'string' ? encodeURIComponent(obj[i]) : obj[i];
-            }
-        }
-    }
-}
 
 
 function postman(param) {
     return new Promise((resolve, reject) => {
+        const _this = param.target;
+        let para = Object.assign(_this.data,param.data);
+        //签名
+        const secret = _this.test?_this.data.test_secret:_this.data.app_secret;
+        para.app_sign = _md5(_this.data.app_id + param.data.timestamp + secret);
         //参数验证
-        const checkResult = checkData(param.data, param.neededData);
+        const checkResult = checkData(para.data, para.neededData);
         if (checkResult.resultCode != 0) {
             resolve(checkResult);
         }
@@ -102,13 +86,13 @@ function postman(param) {
         }
         if (param.type.toLocaleLowerCase() === 'get') {
             request
-                .get(`${urlStr}?para=${encodeURIComponent(JSON.stringify(param.data))}`)
+                .get(`${urlStr}?para=${encodeURIComponent(JSON.stringify(para))}`)
                 .end((err, res) => {
                     resHandler(res);
                 });
         } else if (param.type.toLocaleLowerCase() === 'post') {
             request.post(urlStr)
-                .send(param.data)
+                .send(para)
                 .end((err, res) => {
                     resHandler(res);
                 })
@@ -116,52 +100,5 @@ function postman(param) {
     })
 }
 
-// function postman(param) {
-//     return new Promise((resolve, reject) => {
-//         //参数验证
-//         const checkResult = checkData(param.data, param.neededData);
-//         if (checkResult.resultCode != 0) {
-//             resolve(checkResult);
-//         }
-//         _urlencode(param.data);
-//         const urlStr = 'https://' + config.servers[Math.ceil(Math.random() * 3)] + param.path;
-//         const resHandler = (res)=>{
-//             res.setEncoding("utf-8");
-//             let resData = [],
-//                 errorMsg;
-//             res.on("data", (chunk) => {
-//                 resData.push(chunk);
-//             }).on("end", () => {
-//                 if (res.statusCode === 200) {
-//                     resolve(resData.join(''));
-//                 }
-//             });
-//         }
-//         if (param.type.toLowerCase() === 'get') {
-//             https.get(`${urlStr}?para=${encodeURIComponent(JSON.stringify(param.data))}`, (res) => {
-//                resHandler(res);
-//             })
-//         } else {
-//             let parse = url.parse(urlStr),
-//             data = JSON.stringify(param.data),
-//             options = {
-//                 "method": param.type,
-//                 "host": parse.hostname,
-//                 "path": parse.path,
-//                 "port": parse.port,
-//                 "headers": {
-//                     "Content-Length": data.length,
-//                     "Content-Type": "application/json",
-//                     "Connection": "keep-alive"
-//                 }
-//             };
-//             let req = https.request(options, (res) => {
-//                 resHandler(res);
-//             });
-//             req.write(data);
-//             req.end();
-//         }
-//     })
-// }
 
 exports.postman = postman;

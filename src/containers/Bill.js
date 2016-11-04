@@ -1,7 +1,7 @@
-import React  from 'react';
+import React from 'react';
 import * as config from '../const/config';
 import md5 from 'md5';
-import {postman} from '../actions/request.js';
+import { postman } from '../actions/request.js';
 import QRCode from 'qrcode.react';
 import PureComponent from '../components/PureComponent';
 
@@ -18,12 +18,10 @@ export default class Bill extends PureComponent {
         let data = {}, _this = this;
         data.channel = this.props.params.channel;//根据不同场景选择不同的支付方式	
         data.timestamp = new Date().valueOf();//时间戳，毫秒数	
-        data.app_id = config.APP_ID;//App在BeeCloud平台的唯一标识	
-        data.app_secret = config.APP_SECRET;
         data.total_fee = 1;//total_fee(int 类型) 单位分
         data.bill_no = `bcdemo${data.timestamp}`;//8到32位数字和/或字母组合，请自行确保在商户系统中唯一，同一订单号不可重复提交，否则会造成订单重复
         data.title = `node德玛西亚${data.channel}test`;//title UTF8编码格式，32个字节内，最长支持16个汉字
-        data.optional = {tag: 'msgtoreturn'};//用户自定义的参数，将会在webhook通知中原样返回，该字段主要用于商户携带订单的自定义数据
+        data.optional = { tag: 'msgtoreturn' };//用户自定义的参数，将会在webhook通知中原样返回，该字段主要用于商户携带订单的自定义数据
         data.bill_timeout = 360;//选填必须为非零正整数，单位为秒，建议最短失效时间间隔必须大于360秒，京东(JD*)不支持该参数。	
         switch (data.channel) {
             case 'ALI_WEB':
@@ -79,7 +77,7 @@ export default class Bill extends PureComponent {
                 //32 一卡通(THIRTYTWOCARD)
                 data.frqid = "SZX";
                 break;
-            case 'BC_GATEWAY' :
+            case 'BC_GATEWAY':
                 /*
                  * bank(string 类型) for channel BC_GATEWAY
                  * CMB	  招商银行    ICBC	工商银行   CCB   建设银行(暂不支持)
@@ -99,41 +97,14 @@ export default class Bill extends PureComponent {
             url: 'http://localhost:3002/api/bill',
             data: data,
             success: function (res) {
-                switch (data.channel) {
-                    case 'ALI_WEB':
-                    case 'ALI_WAP':
-                    case 'UN_WEB':
-                    case 'UN_WAP':
-                    case 'JD_WEB':
-                    case 'JD_WAP':
-                    case 'ALI_QRCODE':
-                        document.write(res.html);
-                        break;
-                    case 'BD_WEB':
-                    case 'BD_WAP':
-                    case 'BC_WX_WAP':
-                        window.location.href = res.url;
-                        break;
-                    case 'YEE_WEB':
-                    case 'YEE_WAP':
-                    case 'YEE_NOBANKCARD':
-                    case 'BC_EXPRESS':
-                        window.location.href = res.url;
-                        break;
-                    case 'PAYPAL_PAYPAL':
-                    case 'BC_GATEWAY':
-                        document.write(res.html);
-                        break;
-                    case 'BC_NATIVE':
-                    case 'WX_NATIVE':
-                    case 'WX_JSAPI':
-                        _this.setState({
-                            qrUrl: res.code_url
-                        });
-                        break;
-                    default:
-                        alert('德玛西亚')
-
+                if (res.html) {
+                    document.write(res.html);
+                } else if (res.url) {
+                    window.location.href = res.url;
+                } else if (res.code_url) {
+                    _this.setState({
+                        qrUrl: res.code_url
+                    });
                 }
             }
 
@@ -142,8 +113,8 @@ export default class Bill extends PureComponent {
 
     render() {
 
-        return this.state.qrUrl ? (<div style={{'textAlign': 'center', 'paddingTop': '20%'}}>
-            <QRCode value={this.state.qrUrl}/>
+        return this.state.qrUrl ? (<div style={{ 'textAlign': 'center', 'paddingTop': '20%' }}>
+            <QRCode value={this.state.qrUrl} />
             <p>微信扫码打开</p>
         </div>) : <div></div>
     }

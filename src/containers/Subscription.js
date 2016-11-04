@@ -8,9 +8,7 @@ export default class Subscription extends PureComponent {
     query(){
         let data = {},_this = this;
         data.id = this.props.params.id;
-        data.app_id = config.APP_ID;
         data.timestamp = new Date().valueOf();//时间戳，毫秒数	
-        data.app_secret = config.APP_SECRET;
         data.type = this.props.params.type;
         postman({
             type:'post',
